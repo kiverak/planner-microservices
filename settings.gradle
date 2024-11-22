@@ -1,2 +1,3 @@
 rootProject.name = 'planner-microservices'
 
+include 'planner-server'
