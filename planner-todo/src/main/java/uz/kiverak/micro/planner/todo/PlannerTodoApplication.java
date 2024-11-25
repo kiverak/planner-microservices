@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableDiscoveryClient
 @ComponentScan(basePackages = {"uz.kiverak.micro.planner.plannerentity"})
-@EnableJpaRepositories(basePackages = {"uz.kiverak.micro.planner.plannerentity"})
+@EnableJpaRepositories(basePackages = {"uz.kiverak.micro.planner.todo"})
 public class PlannerTodoApplication {
 
     public static void main(String[] args) {
