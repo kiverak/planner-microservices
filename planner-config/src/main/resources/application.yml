@@ -1,0 +1,16 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: planner-config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/kiverak/prop-test
+          clone-on-start: true
+          basedir: file://d:/tmp/git-config-server
+          username: kiverak
+          password: xxxxxxxxxxxxx
+          default-label: main
