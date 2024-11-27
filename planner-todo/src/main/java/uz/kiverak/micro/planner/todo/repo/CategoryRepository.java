@@ -13,10 +13,11 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     List<Category> findByUserIdOrderByTitleAsc(Long userId);
 
-    @Query("SELECT c FROM Category c where " +
-            "(:title is null or :title='' " +
-            " or lower(c.title) like lower(concat('%', :title,'%'))) " +
-            " and c.userId=:userId  " +
-            " order by c.title asc")
+    @Query("""
+            SELECT c FROM Category c where
+            (:title is null or :title=''
+             or lower(c.title) like lower(concat('%', :title,'%')))
+             and c.userId=:userId
+            order by c.title asc""")
     List<Category> findByTitle(@Param("title") String title, @Param("userId") Long userId);
 }
