@@ -12,5 +12,5 @@ spring:
           clone-on-start: true
           basedir: file://d:/tmp/git-config-server
           username: kiverak
-          password: xxxxxxxxxxxxx
+          password: ${github_token}
           default-label: main

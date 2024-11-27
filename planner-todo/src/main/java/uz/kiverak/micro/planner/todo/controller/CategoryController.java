@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/category") // базовый URI
+@RequestMapping("/category")
 public class CategoryController {
 
     private CategoryService categoryService;
