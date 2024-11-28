@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import uz.kiverak.micro.planner.plannerentity.entity.User;
 import uz.kiverak.micro.planner.users.repo.UserRepository;
 
+import java.util.Optional;
+
 @Service
 
 @Transactional
@@ -18,7 +20,11 @@ public class UserService {
         this.repository = repository;
     }
 
-    public User findByEmail(String email) {
+    public Optional<User> findById(Long id) {
+        return repository.findById(id);
+    }
+
+    public Optional<User> findByEmail(String email) {
         return repository.findByEmail(email);
     }
 
@@ -36,10 +42,6 @@ public class UserService {
 
     public void deleteByUserEmail(String email) {
         repository.deleteByEmail(email);
-    }
-
-    public User findById(Long id) {
-        return repository.findById(id).get();
     }
 
     public Page<User> findByParams(String username, String password, PageRequest paging) {

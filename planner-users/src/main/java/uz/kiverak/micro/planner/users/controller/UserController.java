@@ -11,6 +11,7 @@ import uz.kiverak.micro.planner.users.service.UserService;
 
 import java.text.ParseException;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user") // базовый URI
@@ -53,7 +54,6 @@ public class UserController {
             return new ResponseEntity("missed param: id", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        // если передали пустое значение
         if (user.getEmail() == null || user.getEmail().trim().length() == 0) {
             return new ResponseEntity("missed param: email", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -97,31 +97,32 @@ public class UserController {
 
     @PostMapping("/id")
     public ResponseEntity<User> findById(@RequestBody Long id) {
-        User user;
+        Optional<User> userOptional = userService.findById(id);
 
         try {
-            user = userService.findById(id);
+            if (userOptional.isPresent()) {
+                return ResponseEntity.ok(userOptional.get());
+            }
         } catch (NoSuchElementException e) {
             e.printStackTrace();
-            return new ResponseEntity("id=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return ResponseEntity.ok(user);
+        return new ResponseEntity("id=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
     }
 
     @PostMapping("/email")
     public ResponseEntity<User> findByEmail(@RequestBody String email) {
-
-        User user;
+        Optional<User> userOptional = userService.findByEmail(email);
 
         try {
-            user = userService.findByEmail(email);
+            if (userOptional.isPresent()) {
+                return ResponseEntity.ok(userOptional.get());
+            }
         } catch (NoSuchElementException e) {
             e.printStackTrace();
-            return new ResponseEntity("email=" + email + " not found", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return ResponseEntity.ok(user);
+        return new ResponseEntity("email=" + email + " not found", HttpStatus.NOT_ACCEPTABLE);
     }
 
     @PostMapping("/search")
