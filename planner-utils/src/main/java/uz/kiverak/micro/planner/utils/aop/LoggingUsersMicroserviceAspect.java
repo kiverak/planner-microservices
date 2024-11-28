@@ -11,9 +11,9 @@ import org.springframework.util.StopWatch;
 @Aspect
 @Component
 @Log
-public class LoggingAspect {
+public class LoggingUsersMicroserviceAspect {
 
-    @Around("execution(* uz.kiverak.micro.planner.todo.controller..*(..)))")
+    @Around("execution(* uz.kiverak.micro.planner.users.controller..*(..)))")
     public Object profileControllerMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable
     {
 

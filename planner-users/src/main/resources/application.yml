@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: planner-users
+  config:
+    import: configserver:http://localhost:8888
+  profiles:
+    active: planner-micro, planner-users
