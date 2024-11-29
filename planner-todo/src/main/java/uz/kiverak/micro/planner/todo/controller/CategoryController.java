@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.Category;
+import uz.kiverak.micro.planner.todo.feign.UserFeignClient;
 import uz.kiverak.micro.planner.todo.search.CategorySearchValues;
 import uz.kiverak.micro.planner.todo.service.CategoryService;
 import uz.kiverak.micro.planner.utils.rest.webclient.UserWebclientBuilder;
@@ -18,10 +19,12 @@ public class CategoryController {
 
     private CategoryService categoryService;
     private UserWebclientBuilder userWebclientBuilder;
+    private UserFeignClient userFeignClient;
 
-    public CategoryController(CategoryService categoryService, UserWebclientBuilder userWebclientBuilder) {
+    public CategoryController(CategoryService categoryService, UserWebclientBuilder userWebclientBuilder, UserFeignClient userFeignClient) {
         this.categoryService = categoryService;
         this.userWebclientBuilder = userWebclientBuilder;
+        this.userFeignClient = userFeignClient;
     }
 
     @PostMapping("/all")
@@ -43,12 +46,17 @@ public class CategoryController {
         }
 
         // sync
-        if (userWebclientBuilder.userExists(category.getUserId())) {
-            return ResponseEntity.ok(categoryService.add(category));
-        }
+//        if (userWebclientBuilder.userExists(category.getUserId())) {
+//            return ResponseEntity.ok(categoryService.add(category));
+//        }
 
         // async
 //        userWebclientBuilder.userExistsAsync(category.getUserId()).subscribe(user -> System.out.println("user = " + user));
+
+        // feign
+        if (userFeignClient.findUserById(category.getUserId()) != null) {
+            return ResponseEntity.ok(categoryService.add(category));
+        }
 
         return new ResponseEntity("user id=" + category.getUserId() + " not found", HttpStatus.NOT_FOUND);
     }

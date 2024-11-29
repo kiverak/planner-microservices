@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.User;
 import uz.kiverak.micro.planner.users.search.UserSearchValues;
 import uz.kiverak.micro.planner.users.service.UserService;
+import uz.kiverak.micro.planner.utils.rest.webclient.UserWebclientBuilder;
 
 import java.text.ParseException;
 import java.util.NoSuchElementException;
@@ -20,9 +21,11 @@ public class UserController {
     public static final String ID_COLUMN = "id";
     public static final Integer DEFAULT_PAGE_SIZE = 10;
     private final UserService userService;
+    private final UserWebclientBuilder userWebclientBuilder;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserWebclientBuilder userWebclientBuilder) {
         this.userService = userService;
+        this.userWebclientBuilder = userWebclientBuilder;
     }
 
     @PostMapping("/add")
@@ -44,7 +47,15 @@ public class UserController {
             return new ResponseEntity("missed param: username", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return ResponseEntity.ok(userService.add(user));
+        user = userService.add(user);
+
+        if (user != null) {
+            userWebclientBuilder.initUserData(user.getId()).subscribe(result -> {
+                System.out.println("user populated: " + result);
+            });
+        }
+
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping("/update")

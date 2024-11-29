@@ -9,6 +9,7 @@ import uz.kiverak.micro.planner.plannerentity.entity.User;
 public class UserWebclientBuilder {
 
     private static final String baseUrl = "http://localhost:8765/planner-users/user/";
+    private static final String baseUrlData = "http://localhost:8765/planner-todo/data/";
 
     public boolean userExists(Long userId) {
         try {
@@ -38,5 +39,15 @@ public class UserWebclientBuilder {
                 .bodyValue(userId)
                 .retrieve()
                 .bodyToFlux(User.class);
+    }
+
+    public Flux<Boolean> initUserData(Long userId) {
+
+        return WebClient.create(baseUrlData)
+                .post()
+                .uri("init")
+                .bodyValue(userId)
+                .retrieve()
+                .bodyToFlux(Boolean.class);
     }
 }
