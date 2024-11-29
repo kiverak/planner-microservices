@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.Priority;
 import uz.kiverak.micro.planner.todo.search.PrioritySearchValues;
 import uz.kiverak.micro.planner.todo.service.PriorityService;
+import uz.kiverak.micro.planner.utils.resttemplate.UserRestBuilder;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -16,9 +17,11 @@ import java.util.NoSuchElementException;
 public class PriorityController {
 
     private PriorityService priorityService;
+    private UserRestBuilder userRestBuilder;
 
-    public PriorityController(PriorityService priorityService) {
+    public PriorityController(PriorityService priorityService, UserRestBuilder userRestBuilder) {
         this.priorityService = priorityService;
+        this.userRestBuilder = userRestBuilder;
     }
 
     @PostMapping("/all")
@@ -41,7 +44,11 @@ public class PriorityController {
             return new ResponseEntity("missed param: color", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return ResponseEntity.ok(priorityService.add(priority));
+        if (userRestBuilder.userExists(priority.getUserId())) {
+            return ResponseEntity.ok(priorityService.add(priority));
+        }
+
+        return new ResponseEntity("user id=" + priority.getUserId() + " not found", HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/update")

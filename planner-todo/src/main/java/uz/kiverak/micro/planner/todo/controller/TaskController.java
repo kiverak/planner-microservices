@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.Task;
 import uz.kiverak.micro.planner.todo.service.TaskService;
 import uz.kiverak.micro.planner.todo.search.TaskSearchValues;
+import uz.kiverak.micro.planner.utils.resttemplate.UserRestBuilder;
 
 import java.text.ParseException;
 import java.util.*;
@@ -18,9 +19,11 @@ public class TaskController {
 
     public static final String ID_COLUMN = "id";
     private final TaskService taskService;
+    private UserRestBuilder userRestBuilder;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, UserRestBuilder userRestBuilder) {
         this.taskService = taskService;
+        this.userRestBuilder = userRestBuilder;
     }
 
     @PostMapping("/all")
@@ -39,7 +42,11 @@ public class TaskController {
             return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        return ResponseEntity.ok(taskService.add(task));
+        if (userRestBuilder.userExists(task.getUserId())) {
+            return ResponseEntity.ok(taskService.add(task));
+        }
+
+        return new ResponseEntity("user id=" + task.getUserId() + " not found", HttpStatus.NOT_FOUND);
 
     }
 
