@@ -118,7 +118,7 @@ public class UserController {
             e.printStackTrace();
         }
 
-        return new ResponseEntity("id=" + id + " not found", HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity("id=" + id + " not found", HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/email")

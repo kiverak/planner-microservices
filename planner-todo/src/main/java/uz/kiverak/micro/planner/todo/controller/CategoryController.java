@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.Category;
+import uz.kiverak.micro.planner.plannerentity.entity.User;
 import uz.kiverak.micro.planner.todo.feign.UserFeignClient;
 import uz.kiverak.micro.planner.todo.search.CategorySearchValues;
 import uz.kiverak.micro.planner.todo.service.CategoryService;
@@ -54,7 +55,12 @@ public class CategoryController {
 //        userWebclientBuilder.userExistsAsync(category.getUserId()).subscribe(user -> System.out.println("user = " + user));
 
         // feign
-        if (userFeignClient.findUserById(category.getUserId()) != null) {
+        ResponseEntity<User> result = userFeignClient.findUserById(category.getUserId());
+        if (result == null) {
+            return new ResponseEntity("System unavailable, try later", HttpStatus.NOT_FOUND);
+        }
+
+        if (result.getBody() != null) {
             return ResponseEntity.ok(categoryService.add(category));
         }
 
