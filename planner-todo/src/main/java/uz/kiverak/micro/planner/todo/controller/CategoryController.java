@@ -42,9 +42,13 @@ public class CategoryController {
             return new ResponseEntity("missed param: title MUST be not null", HttpStatus.NOT_ACCEPTABLE);
         }
 
+        // sync
         if (userWebclientBuilder.userExists(category.getUserId())) {
             return ResponseEntity.ok(categoryService.add(category));
         }
+
+        // async
+//        userWebclientBuilder.userExistsAsync(category.getUserId()).subscribe(user -> System.out.println("user = " + user));
 
         return new ResponseEntity("user id=" + category.getUserId() + " not found", HttpStatus.NOT_FOUND);
     }

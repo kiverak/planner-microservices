@@ -2,6 +2,7 @@ package uz.kiverak.micro.planner.utils.rest.webclient;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import uz.kiverak.micro.planner.plannerentity.entity.User;
 
 @Component
@@ -27,5 +28,15 @@ public class UserWebclientBuilder {
         }
 
         return false;
+    }
+
+    public Flux<User> userExistsAsync(Long userId) {
+
+        return WebClient.create(baseUrl)
+                .post()
+                .uri("id")
+                .bodyValue(userId)
+                .retrieve()
+                .bodyToFlux(User.class);
     }
 }
