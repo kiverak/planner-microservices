@@ -1,4 +1,4 @@
-package uz.kiverak.micro.planner.utils.resttemplate;
+package uz.kiverak.micro.planner.utils.rest.resttemplate;
 
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;

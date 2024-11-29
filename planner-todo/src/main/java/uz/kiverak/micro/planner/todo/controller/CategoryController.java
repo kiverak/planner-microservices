@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.Category;
-import uz.kiverak.micro.planner.todo.service.CategoryService;
 import uz.kiverak.micro.planner.todo.search.CategorySearchValues;
-import uz.kiverak.micro.planner.utils.resttemplate.UserRestBuilder;
+import uz.kiverak.micro.planner.todo.service.CategoryService;
+import uz.kiverak.micro.planner.utils.rest.webclient.UserWebclientBuilder;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,11 +17,11 @@ import java.util.NoSuchElementException;
 public class CategoryController {
 
     private CategoryService categoryService;
-    private UserRestBuilder userRestBuilder;
+    private UserWebclientBuilder userWebclientBuilder;
 
-    public CategoryController(CategoryService categoryService, UserRestBuilder userRestBuilder) {
+    public CategoryController(CategoryService categoryService, UserWebclientBuilder userWebclientBuilder) {
         this.categoryService = categoryService;
-        this.userRestBuilder = userRestBuilder;
+        this.userWebclientBuilder = userWebclientBuilder;
     }
 
     @PostMapping("/all")
@@ -42,7 +42,7 @@ public class CategoryController {
             return new ResponseEntity("missed param: title MUST be not null", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        if (userRestBuilder.userExists(category.getUserId())) {
+        if (userWebclientBuilder.userExists(category.getUserId())) {
             return ResponseEntity.ok(categoryService.add(category));
         }
 

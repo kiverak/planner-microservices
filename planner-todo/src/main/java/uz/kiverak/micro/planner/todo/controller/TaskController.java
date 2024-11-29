@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.Task;
-import uz.kiverak.micro.planner.todo.service.TaskService;
 import uz.kiverak.micro.planner.todo.search.TaskSearchValues;
-import uz.kiverak.micro.planner.utils.resttemplate.UserRestBuilder;
+import uz.kiverak.micro.planner.todo.service.TaskService;
+import uz.kiverak.micro.planner.utils.rest.webclient.UserWebclientBuilder;
 
 import java.text.ParseException;
 import java.util.*;
@@ -19,11 +19,11 @@ public class TaskController {
 
     public static final String ID_COLUMN = "id";
     private final TaskService taskService;
-    private UserRestBuilder userRestBuilder;
+    private UserWebclientBuilder userWebclientBuilder;
 
-    public TaskController(TaskService taskService, UserRestBuilder userRestBuilder) {
+    public TaskController(TaskService taskService, UserWebclientBuilder userWebclientBuilder) {
         this.taskService = taskService;
-        this.userRestBuilder = userRestBuilder;
+        this.userWebclientBuilder = userWebclientBuilder;
     }
 
     @PostMapping("/all")
@@ -42,7 +42,7 @@ public class TaskController {
             return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        if (userRestBuilder.userExists(task.getUserId())) {
+        if (userWebclientBuilder.userExists(task.getUserId())) {
             return ResponseEntity.ok(taskService.add(task));
         }
 
@@ -110,7 +110,7 @@ public class TaskController {
 
         Long userId = taskSearchValues.getUserId() != null ? taskSearchValues.getUserId() : null;
 
-        if (userId == null || userId== 0) {
+        if (userId == null || userId == 0) {
             return new ResponseEntity("missed param: userId", HttpStatus.NOT_ACCEPTABLE);
         }
 
