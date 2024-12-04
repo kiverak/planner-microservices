@@ -21,6 +21,9 @@ public class FeignExceptionHandler implements ErrorDecoder {
             case 406: {
                 return new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, readMessage(response));
             }
+            case 503: {
+                return new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, readMessage(response));
+            }
         }
 
         return null;
