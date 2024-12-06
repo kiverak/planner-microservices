@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.User;
-import uz.kiverak.micro.planner.users.mq.MessageProducer;
+import uz.kiverak.micro.planner.users.mq.func.MessageFuncActions;
 import uz.kiverak.micro.planner.users.search.UserSearchValues;
 import uz.kiverak.micro.planner.users.service.UserService;
 import uz.kiverak.micro.planner.utils.rest.webclient.UserWebclientBuilder;
@@ -25,12 +25,13 @@ public class UserController {
     public static final Integer DEFAULT_PAGE_SIZE = 10;
     private final UserService userService;
     private final UserWebclientBuilder userWebclientBuilder;
-    private final MessageProducer messageProducer;
+//    private final MessageProducer messageProducer;
+    private final MessageFuncActions messageFuncActions;
 
-    public UserController(UserService userService, UserWebclientBuilder userWebclientBuilder, MessageProducer messageProducer) {
+    public UserController(UserService userService, UserWebclientBuilder userWebclientBuilder, MessageFuncActions messageFuncActions) {
         this.userService = userService;
         this.userWebclientBuilder = userWebclientBuilder;
-        this.messageProducer = messageProducer;
+        this.messageFuncActions = messageFuncActions;
     }
 
     @PostMapping("/add")
@@ -60,8 +61,14 @@ public class UserController {
 //            });
 //        }
 
-        if (user != null) {
-            messageProducer.initUserData(user.getId());
+        // send with rabbit with annotations way
+//        if (user != null) {
+//            messageProducer.initUserData(user.getId());
+//        }
+
+        // send with rabbit with functional way
+        if (user!= null) {
+            messageFuncActions.sendNewUserMessage(user.getId());
         }
 
         return ResponseEntity.ok(user);
