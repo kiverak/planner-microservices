@@ -38,6 +38,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
     implementation project(':planner-entity')
     implementation project(':planner-utils')
     runtimeOnly 'org.postgresql:postgresql'

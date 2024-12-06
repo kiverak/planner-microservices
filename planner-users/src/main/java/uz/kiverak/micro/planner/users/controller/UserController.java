@@ -1,11 +1,14 @@
 package uz.kiverak.micro.planner.users.controller;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.User;
+import uz.kiverak.micro.planner.users.mq.MessageProducer;
 import uz.kiverak.micro.planner.users.search.UserSearchValues;
 import uz.kiverak.micro.planner.users.service.UserService;
 import uz.kiverak.micro.planner.utils.rest.webclient.UserWebclientBuilder;
@@ -22,10 +25,12 @@ public class UserController {
     public static final Integer DEFAULT_PAGE_SIZE = 10;
     private final UserService userService;
     private final UserWebclientBuilder userWebclientBuilder;
+    private final MessageProducer messageProducer;
 
-    public UserController(UserService userService, UserWebclientBuilder userWebclientBuilder) {
+    public UserController(UserService userService, UserWebclientBuilder userWebclientBuilder, MessageProducer messageProducer) {
         this.userService = userService;
         this.userWebclientBuilder = userWebclientBuilder;
+        this.messageProducer = messageProducer;
     }
 
     @PostMapping("/add")
@@ -49,10 +54,14 @@ public class UserController {
 
         user = userService.add(user);
 
+//        if (user != null) {
+//            userWebclientBuilder.initUserData(user.getId()).subscribe(result -> {
+//                System.out.println("user populated: " + result);
+//            });
+//        }
+
         if (user != null) {
-            userWebclientBuilder.initUserData(user.getId()).subscribe(result -> {
-                System.out.println("user populated: " + result);
-            });
+            messageProducer.initUserData(user.getId());
         }
 
         return ResponseEntity.ok(user);
