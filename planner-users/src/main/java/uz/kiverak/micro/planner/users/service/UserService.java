@@ -8,6 +8,7 @@ import uz.kiverak.micro.planner.plannerentity.entity.User;
 import uz.kiverak.micro.planner.users.repo.UserRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 
@@ -20,7 +21,7 @@ public class UserService {
         this.repository = repository;
     }
 
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(String id) {
         return repository.findById(id);
     }
 
@@ -36,7 +37,7 @@ public class UserService {
         return repository.save(user);
     }
 
-    public void deleteByUserId(Long id) {
+    public void deleteByUserId(String id) {
         repository.deleteById(id);
     }
 

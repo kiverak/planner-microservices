@@ -123,7 +123,7 @@ public class UserController {
     }
 
     @PostMapping("/id")
-    public ResponseEntity<User> findById(@RequestBody Long id) {
+    public ResponseEntity<User> findById(@RequestBody String id) {
         Optional<User> userOptional = userService.findById(id);
 
         try {

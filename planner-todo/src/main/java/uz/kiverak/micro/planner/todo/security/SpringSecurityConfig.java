@@ -17,14 +17,17 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+        final String[] USER_ACCESS_ENDPOINTS = {"/user/*", "/category/*", "/priority/*", "/task/*"};
+
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KCRoleConverter());
 
         http
                 .authorizeHttpRequests(request -> request
+                        .requestMatchers("/test/*").permitAll()
                         .requestMatchers("/reg/*").anonymous()
                         .requestMatchers("/admin/*").hasRole("admin")
-                        .requestMatchers("/user/*").hasRole("user")
+                        .requestMatchers(USER_ACCESS_ENDPOINTS).hasRole("user")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(customizer -> customizer
                         .jwt(jwtCustomizer -> jwtCustomizer.jwtAuthenticationConverter(jwtAuthenticationConverter))

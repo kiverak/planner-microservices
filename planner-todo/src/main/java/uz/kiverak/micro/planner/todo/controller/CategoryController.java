@@ -105,7 +105,9 @@ public class CategoryController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValues categorySearchValues) {
+    public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValues categorySearchValues, @AuthenticationPrincipal Jwt jwt) {
+
+        categorySearchValues.setUserId(jwt.getSubject());
 
         if (categorySearchValues.getUserId() == null || categorySearchValues.getUserId().isBlank()) {
             return new ResponseEntity("missed param: userId", HttpStatus.NOT_ACCEPTABLE);

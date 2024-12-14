@@ -9,9 +9,10 @@ import org.springframework.stereotype.Repository;
 import uz.kiverak.micro.planner.plannerentity.entity.User;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByEmail(String email);
 

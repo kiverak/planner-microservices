@@ -102,7 +102,9 @@ public class TaskController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<Page<Task>> search(@RequestBody TaskSearchValues taskSearchValues) throws ParseException {
+    public ResponseEntity<Page<Task>> search(@RequestBody TaskSearchValues taskSearchValues, @AuthenticationPrincipal Jwt jwt) throws ParseException {
+        taskSearchValues.setUserId(jwt.getSubject());
+
         String title = taskSearchValues.getTitle() != null ? taskSearchValues.getTitle() : null;
 
         Boolean completed = taskSearchValues.getCompleted() != null && taskSearchValues.getCompleted() == 1;
