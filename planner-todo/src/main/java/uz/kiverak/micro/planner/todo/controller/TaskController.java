@@ -110,9 +110,9 @@ public class TaskController {
 
         Long userId = taskSearchValues.getUserId() != null ? taskSearchValues.getUserId() : null;
 
-        if (userId == null || userId == 0) {
-            return new ResponseEntity("missed param: userId", HttpStatus.NOT_ACCEPTABLE);
-        }
+//        if (userId == null || userId == 0) {
+//            return new ResponseEntity("missed param: userId", HttpStatus.NOT_ACCEPTABLE);
+//        }
 
         // чтобы захватить в выборке все задачи по датам, независимо от времени - можно выставить время с 00:00 до 23:59
 
