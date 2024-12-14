@@ -52,7 +52,7 @@ public class Task implements Serializable {
 //    @JoinColumn(name = "user_id", referencedColumnName = "id") // по каким полям связывать (foreign key)
 //    private User user; // для какого пользователя задача
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
 
     @Override

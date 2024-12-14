@@ -31,12 +31,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                             @Param("completed") Boolean completed,
                             @Param("priorityId") Long priorityId,
                             @Param("categoryId") Long categoryId,
-                            @Param("userId") Long userId,
+                            @Param("userId") String userId,
                             @Param("dateFrom") Date dateFrom,
                             @Param("dateTo") Date dateTo,
                             Pageable pageable
     );
 
-    List<Task> findByUserIdOrderByTitleAsc(Long userId);
+    List<Task> findByUserIdOrderByTitleAsc(String userId);
 
 }

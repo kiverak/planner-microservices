@@ -15,7 +15,7 @@ import java.util.Objects;
 @Getter
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Activity { // название таблицы будет браться автоматически по названию класса с маленькой буквы: activity
+public class Activity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,14 +25,14 @@ public class Activity { // название таблицы будет брать
     private Boolean activated; // становится true только после подтверждения активации пользователем (обратно false уже стать не может по логике)
 
     @Column(updatable = false)
-    private String uuid; // создается только один раз с помощью триггера в БД
+    private String uuid;
 
 //    @OneToOne(fetch = FetchType.LAZY)
 //    @MapsId
 //    @JoinColumn(name = "user_id", referencedColumnName = "id")
 //    private User user;
     @Column(name = "user_id")
-    private Long userId;
+    private String userId;
 
 
     @Override

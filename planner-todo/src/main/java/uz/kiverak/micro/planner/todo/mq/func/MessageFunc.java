@@ -17,7 +17,7 @@ public class MessageFunc {
     }
 
     @Bean
-    public Consumer<Message<Long>> newUserActionConsume() {
+    public Consumer<Message<String>> newUserActionConsume() {
         return message -> testDataService.initUserData(message.getPayload());
     }
 }

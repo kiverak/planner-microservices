@@ -3,6 +3,8 @@ package uz.kiverak.micro.planner.todo.controller;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.Priority;
 import uz.kiverak.micro.planner.todo.search.PrioritySearchValues;
@@ -25,12 +27,14 @@ public class PriorityController {
     }
 
     @PostMapping("/all")
-    public List<Priority> findAll(@RequestBody Long userId) {
+    public List<Priority> findAll(@RequestBody String userId) {
         return priorityService.findAll(userId);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Priority> add(@RequestBody Priority priority) {
+    public ResponseEntity<Priority> add(@RequestBody Priority priority, @AuthenticationPrincipal Jwt jwt) {
+
+        priority.setUserId(jwt.getSubject());
 
         if (priority.getId() != null && priority.getId() != 0) {
             return new ResponseEntity("redundant param: id MUST be null", HttpStatus.NOT_ACCEPTABLE);
@@ -44,7 +48,11 @@ public class PriorityController {
             return new ResponseEntity("missed param: color", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        if (userWebclientBuilder.userExists(priority.getUserId())) {
+//        if (userWebclientBuilder.userExists(priority.getUserId())) {
+//            return ResponseEntity.ok(priorityService.add(priority));
+//        }
+
+        if (priority.getUserId() != null && !priority.getUserId().isBlank()) {
             return ResponseEntity.ok(priorityService.add(priority));
         }
 
@@ -101,7 +109,7 @@ public class PriorityController {
     public ResponseEntity<List<Priority>> search(@RequestBody PrioritySearchValues prioritySearchValues) {
 
         // проверка на обязательные параметры
-        if (prioritySearchValues.getUserId() == null || prioritySearchValues.getUserId() == 0) {
+        if (prioritySearchValues.getUserId() == null || prioritySearchValues.getUserId().isBlank()) {
             return new ResponseEntity("missed param: userId", HttpStatus.NOT_ACCEPTABLE);
         }
 

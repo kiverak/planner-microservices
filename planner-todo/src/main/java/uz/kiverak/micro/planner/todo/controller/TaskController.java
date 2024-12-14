@@ -4,6 +4,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.Task;
 import uz.kiverak.micro.planner.todo.search.TaskSearchValues;
@@ -27,12 +29,14 @@ public class TaskController {
     }
 
     @PostMapping("/all")
-    public ResponseEntity<List<Task>> findAll(@RequestBody Long userId) {
+    public ResponseEntity<List<Task>> findAll(@RequestBody String userId) {
         return ResponseEntity.ok(taskService.findAll(userId));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Task> add(@RequestBody Task task) {
+    public ResponseEntity<Task> add(@RequestBody Task task, @AuthenticationPrincipal Jwt jwt) {
+
+        task.setUserId(jwt.getSubject());
 
         if (task.getId() != null && task.getId() != 0) {
             return new ResponseEntity("redundant param: id MUST be null", HttpStatus.NOT_ACCEPTABLE);
@@ -42,7 +46,11 @@ public class TaskController {
             return new ResponseEntity("missed param: title", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        if (userWebclientBuilder.userExists(task.getUserId())) {
+//        if (userWebclientBuilder.userExists(task.getUserId())) {
+//            return ResponseEntity.ok(taskService.add(task));
+//        }
+
+        if (task.getUserId() != null && !task.getUserId().isBlank()) {
             return ResponseEntity.ok(taskService.add(task));
         }
 
@@ -108,7 +116,7 @@ public class TaskController {
         Integer pageNumber = taskSearchValues.getPageNumber() != null ? taskSearchValues.getPageNumber() : null;
         Integer pageSize = taskSearchValues.getPageSize() != null ? taskSearchValues.getPageSize() : null;
 
-        Long userId = taskSearchValues.getUserId() != null ? taskSearchValues.getUserId() : null;
+        String userId = taskSearchValues.getUserId() != null ? taskSearchValues.getUserId() : null;
 
 //        if (userId == null || userId == 0) {
 //            return new ResponseEntity("missed param: userId", HttpStatus.NOT_ACCEPTABLE);

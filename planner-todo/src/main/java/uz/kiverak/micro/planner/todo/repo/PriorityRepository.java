@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface PriorityRepository extends JpaRepository<Priority, Long> {
 
-    List<Priority> findByUserIdOrderByIdAsc(Long userId);
+    List<Priority> findByUserIdOrderByIdAsc(String userId);
 
     @Query("""
             SELECT p FROM Priority p where
@@ -19,6 +19,6 @@ public interface PriorityRepository extends JpaRepository<Priority, Long> {
              or lower(p.title) like lower(concat('%', :title,'%')))
              and p.userId=:userId
             order by p.title asc""")
-    List<Priority> findByTitle(@Param("title") String title, @Param("userId") Long userId);
+    List<Priority> findByTitle(@Param("title") String title, @Param("userId") String userId);
 
 }

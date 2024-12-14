@@ -14,7 +14,7 @@ public class TaskSearchValues {
     private Integer completed;
     private Long priorityId;
     private Long categoryId;
-    private Long userId;
+    private String userId;
 
     private Date dateFrom;
     private Date dateTo;

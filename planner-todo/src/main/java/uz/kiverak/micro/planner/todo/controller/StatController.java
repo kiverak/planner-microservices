@@ -15,7 +15,7 @@ public class StatController {
     }
 
     @PostMapping("/stat")
-    public ResponseEntity<Stat> findByEmail(@RequestBody Long userId) {
+    public ResponseEntity<Stat> findByEmail(@RequestBody String userId) {
 
         return ResponseEntity.ok(statService.findStat(userId));
     }

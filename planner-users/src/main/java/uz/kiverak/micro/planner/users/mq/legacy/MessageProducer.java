@@ -14,7 +14,7 @@ package uz.kiverak.micro.planner.users.mq.legacy;
 //        this.todoBinding = todoBinding;
 //    }
 //
-//    public void initUserData(Long userId) {
+//    public void initUserData(String userId) {
 //
 //        Message<Long> message = MessageBuilder.withPayload(userId).build();
 //

@@ -9,6 +9,6 @@ import lombok.*;
 public class CategorySearchValues {
 
     private String title;
-    private Long userId;
+    private String userId;
 
 }

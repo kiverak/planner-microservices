@@ -14,7 +14,7 @@ package uz.kiverak.micro.planner.todo.mq.legacy;
 //    }
 //
 //    @StreamListener(target = TodoBinding.INPUT_CHANNEL)
-//    public void initTestData(Long userId) throws Exception {
+//    public void initTestData(String userId) throws Exception {
 //        throw new Exception("Test dlq");
 ////        testDataService.initTestData(userId);
 //    }

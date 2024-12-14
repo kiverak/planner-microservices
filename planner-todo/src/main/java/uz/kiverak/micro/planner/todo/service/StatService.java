@@ -15,7 +15,7 @@ public class StatService {
         this.repository = repository;
     }
 
-    public Stat findStat(Long userId) {
+    public Stat findStat(String userId) {
         return repository.findByUserId(userId);
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    List<Category> findByUserIdOrderByTitleAsc(Long userId);
+    List<Category> findByUserIdOrderByTitleAsc(String userId);
 
     @Query("""
             SELECT c FROM Category c where
@@ -19,5 +19,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
              or lower(c.title) like lower(concat('%', :title,'%')))
              and c.userId=:userId
             order by c.title asc""")
-    List<Category> findByTitle(@Param("title") String title, @Param("userId") Long userId);
+    List<Category> findByTitle(@Param("title") String title, @Param("userId") String userId);
 }

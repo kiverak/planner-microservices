@@ -3,6 +3,8 @@ package uz.kiverak.micro.planner.todo.controller;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.Category;
 import uz.kiverak.micro.planner.plannerentity.entity.User;
@@ -29,13 +31,15 @@ public class CategoryController {
     }
 
     @PostMapping("/all")
-    public List<Category> findAll(@RequestBody Long userId) {
+    public List<Category> findAll(@RequestBody String userId) {
         return categoryService.findAll(userId);
     }
 
 
     @PostMapping("/add")
-    public ResponseEntity<Category> add(@RequestBody Category category) {
+    public ResponseEntity<Category> add(@RequestBody Category category, @AuthenticationPrincipal Jwt jwt) {
+
+        category.setUserId(jwt.getSubject());
 
 
         if (category.getId() != null && category.getId() != 0) {
@@ -55,12 +59,16 @@ public class CategoryController {
 //        userWebclientBuilder.userExistsAsync(category.getUserId()).subscribe(user -> System.out.println("user = " + user));
 
         // feign
-        ResponseEntity<User> result = userFeignClient.findUserById(category.getUserId());
-        if (result == null) {
-            return new ResponseEntity("System unavailable, try later", HttpStatus.NOT_FOUND);
-        }
+//        ResponseEntity<User> result = userFeignClient.findUserById(category.getUserId());
+//        if (result == null) {
+//            return new ResponseEntity("System unavailable, try later", HttpStatus.NOT_FOUND);
+//        }
+//
+//        if (result.getBody() != null) {
+//            return ResponseEntity.ok(categoryService.add(category));
+//        }
 
-        if (result.getBody() != null) {
+        if (!category.getUserId().isBlank()) {
             return ResponseEntity.ok(categoryService.add(category));
         }
 
@@ -99,7 +107,7 @@ public class CategoryController {
     @PostMapping("/search")
     public ResponseEntity<List<Category>> search(@RequestBody CategorySearchValues categorySearchValues) {
 
-        if (categorySearchValues.getUserId() == null || categorySearchValues.getUserId() == 0) {
+        if (categorySearchValues.getUserId() == null || categorySearchValues.getUserId().isBlank()) {
             return new ResponseEntity("missed param: userId", HttpStatus.NOT_ACCEPTABLE);
         }
 

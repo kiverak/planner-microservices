@@ -99,7 +99,7 @@ public class UserController {
     }
 
     @PostMapping("/deletebyid")
-    public ResponseEntity deleteByUserId(@RequestBody Long userId) {
+    public ResponseEntity deleteByUserId(@RequestBody String userId) {
         try {
             userService.deleteByUserId(userId);
         } catch (EmptyResultDataAccessException e) {

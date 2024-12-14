@@ -11,7 +11,7 @@ public class UserWebclientBuilder {
     private static final String baseUrl = "http://localhost:8765/planner-users/user/";
     private static final String baseUrlData = "http://localhost:8765/planner-todo/data/";
 
-    public boolean userExists(Long userId) {
+    public boolean userExists(String userId) {
         try {
             User user = WebClient.create(baseUrl)
                     .post()
@@ -31,7 +31,7 @@ public class UserWebclientBuilder {
         return false;
     }
 
-    public Flux<User> userExistsAsync(Long userId) {
+    public Flux<User> userExistsAsync(String userId) {
 
         return WebClient.create(baseUrl)
                 .post()
@@ -41,7 +41,7 @@ public class UserWebclientBuilder {
                 .bodyToFlux(User.class);
     }
 
-    public Flux<Boolean> initUserData(Long userId) {
+    public Flux<Boolean> initUserData(String userId) {
 
         return WebClient.create(baseUrlData)
                 .post()

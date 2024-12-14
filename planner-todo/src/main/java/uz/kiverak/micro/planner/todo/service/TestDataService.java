@@ -22,7 +22,7 @@ public class TestDataService {
         this.categoryService = categoryService;
     }
 
-    public ResponseEntity<Boolean> initUserData(Long userId) {
+    public ResponseEntity<Boolean> initUserData(String userId) {
 
         Priority prior1 = new Priority();
         prior1.setColor("#fff");
