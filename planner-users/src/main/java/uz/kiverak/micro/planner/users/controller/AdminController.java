@@ -1,6 +1,9 @@
 package uz.kiverak.micro.planner.users.controller;
 
 import javax.ws.rs.core.Response;
+
+import lombok.extern.log4j.Log4j2;
+import org.keycloak.admin.client.CreatedResponseUtil;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.User;
+import uz.kiverak.micro.planner.users.dto.UserDto;
 import uz.kiverak.micro.planner.users.keycloak.KeycloakUtils;
 import uz.kiverak.micro.planner.users.mq.func.MessageFuncActions;
 import uz.kiverak.micro.planner.users.search.UserSearchValues;
@@ -19,12 +23,15 @@ import java.text.ParseException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Log4j2
 @RestController
 @RequestMapping("admin/user") // базовый URI
 public class AdminController {
 
     public static final String ID_COLUMN = "id";
     public static final Integer DEFAULT_PAGE_SIZE = 10;
+    public static final int CONFLICT = 409;
+
     private final UserService userService;
     private final UserWebclientBuilder userWebclientBuilder;
 //    private final MessageProducer messageProducer;
@@ -39,45 +46,52 @@ public class AdminController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<User> add(@RequestBody User user) {
+    public ResponseEntity<User> add(@RequestBody UserDto userDto) {
 
-        if (user.getId() != null && user.getId() != 0) {
-            return new ResponseEntity("redundant param: id MUST be null", HttpStatus.NOT_ACCEPTABLE);
-        }
+//        if (userDto.getId() != null && userDto.getId() != 0) {
+//            return new ResponseEntity("redundant param: id MUST be null", HttpStatus.NOT_ACCEPTABLE);
+//        }
 
-        if (user.getEmail() == null || user.getEmail().trim().length() == 0) {
+        if (userDto.getEmail() == null || userDto.getEmail().trim().length() == 0) {
             return new ResponseEntity("missed param: email", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        if (user.getPassword() == null || user.getPassword().trim().length() == 0) {
+        if (userDto.getPassword() == null || userDto.getPassword().trim().length() == 0) {
             return new ResponseEntity("missed param: password", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        if (user.getUsername() == null || user.getUsername().trim().length() == 0) {
+        if (userDto.getUsername() == null || userDto.getUsername().trim().length() == 0) {
             return new ResponseEntity("missed param: username", HttpStatus.NOT_ACCEPTABLE);
         }
 
-//        user = userService.add(user);
+//        userDto = userService.add(userDto);
 
-//        if (user != null) {
-//            userWebclientBuilder.initUserData(user.getId()).subscribe(result -> {
-//                System.out.println("user populated: " + result);
+//        if (userDto != null) {
+//            userWebclientBuilder.initUserData(userDto.getId()).subscribe(result -> {
+//                System.out.println("userDto populated: " + result);
 //            });
 //        }
 
         // send with rabbit with annotations way
-//        if (user != null) {
-//            messageProducer.initUserData(user.getId());
+//        if (userDto != null) {
+//            messageProducer.initUserData(userDto.getId());
 //        }
 
         // send with rabbit with functional way
-//        if (user!= null) {
-//            messageFuncActions.sendNewUserMessage(user.getId());
+//        if (userDto!= null) {
+//            messageFuncActions.sendNewUserMessage(userDto.getId());
 //        }
 //
-//        return ResponseEntity.ok(user);
+//        return ResponseEntity.ok(userDto);
 
-        Response response = keycloakUtils.createKeycloakUser(user);
+        Response response = keycloakUtils.createKeycloakUser(userDto);
+
+        if (response.getStatus() == CONFLICT) {
+            return new ResponseEntity("user or email already exists: " + userDto.getEmail(), HttpStatus.CONFLICT);
+        }
+
+        String userId = CreatedResponseUtil.getCreatedId(response);
+        log.info("User created with userId: {}", userId);
 
         return ResponseEntity.status(response.getStatus()).build();
     }
