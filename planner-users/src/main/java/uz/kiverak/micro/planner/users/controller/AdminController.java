@@ -18,8 +18,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user") // базовый URI
-public class UserController {
+@RequestMapping("admin/user") // базовый URI
+public class AdminController {
 
     public static final String ID_COLUMN = "id";
     public static final Integer DEFAULT_PAGE_SIZE = 10;
@@ -28,7 +28,7 @@ public class UserController {
 //    private final MessageProducer messageProducer;
     private final MessageFuncActions messageFuncActions;
 
-    public UserController(UserService userService, UserWebclientBuilder userWebclientBuilder, MessageFuncActions messageFuncActions) {
+    public AdminController(UserService userService, UserWebclientBuilder userWebclientBuilder, MessageFuncActions messageFuncActions) {
         this.userService = userService;
         this.userWebclientBuilder = userWebclientBuilder;
         this.messageFuncActions = messageFuncActions;

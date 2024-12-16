@@ -28,17 +28,22 @@ repositories {
 
 ext {
     set('springCloudVersion', "2024.0.0")
+    set('keyCloakVersion', "18.0.2")
 }
 
 dependencies {
+    implementation ('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'){
+        exclude group: 'jakarta.ws.rs', module:'jsr-311-ap'
+    }
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation "org.keycloak:keycloak-admin-client:${keyCloakVersion}"
     implementation project(':planner-entity')
     implementation project(':planner-utils')
     runtimeOnly 'org.postgresql:postgresql'
@@ -49,5 +54,6 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.keycloak.bom:keycloak-adapter-bom:${keyCloakVersion}"
     }
 }
