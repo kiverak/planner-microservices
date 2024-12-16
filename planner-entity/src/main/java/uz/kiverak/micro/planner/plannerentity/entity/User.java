@@ -8,8 +8,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "user_data", schema = "users", catalog = "planner_users")
+//@Entity
+//@Table(name = "user_data", schema = "users", catalog = "planner_users")
 @Setter
 @Getter
 @AllArgsConstructor
@@ -18,20 +18,20 @@ import java.util.Set;
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String email;
 
     private String username;
 
-    @Column(name = "userpassword")
+//    @Column(name = "userpassword")
     private String password;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToMany(mappedBy = "users")
-    private Set<Role> roles;
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @ManyToMany(mappedBy = "users")
+//    private Set<Role> roles;
 
 
     @Override

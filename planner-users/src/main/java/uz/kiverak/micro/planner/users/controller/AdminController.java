@@ -1,5 +1,6 @@
 package uz.kiverak.micro.planner.users.controller;
 
+import javax.ws.rs.core.Response;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.kiverak.micro.planner.plannerentity.entity.User;
+import uz.kiverak.micro.planner.users.keycloak.KeycloakUtils;
 import uz.kiverak.micro.planner.users.mq.func.MessageFuncActions;
 import uz.kiverak.micro.planner.users.search.UserSearchValues;
 import uz.kiverak.micro.planner.users.service.UserService;
@@ -27,11 +29,13 @@ public class AdminController {
     private final UserWebclientBuilder userWebclientBuilder;
 //    private final MessageProducer messageProducer;
     private final MessageFuncActions messageFuncActions;
+    private final KeycloakUtils keycloakUtils;
 
-    public AdminController(UserService userService, UserWebclientBuilder userWebclientBuilder, MessageFuncActions messageFuncActions) {
+    public AdminController(UserService userService, UserWebclientBuilder userWebclientBuilder, MessageFuncActions messageFuncActions, KeycloakUtils keycloakUtils) {
         this.userService = userService;
         this.userWebclientBuilder = userWebclientBuilder;
         this.messageFuncActions = messageFuncActions;
+        this.keycloakUtils = keycloakUtils;
     }
 
     @PostMapping("/add")
@@ -53,7 +57,7 @@ public class AdminController {
             return new ResponseEntity("missed param: username", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        user = userService.add(user);
+//        user = userService.add(user);
 
 //        if (user != null) {
 //            userWebclientBuilder.initUserData(user.getId()).subscribe(result -> {
@@ -67,11 +71,15 @@ public class AdminController {
 //        }
 
         // send with rabbit with functional way
-        if (user!= null) {
-            messageFuncActions.sendNewUserMessage(user.getId());
-        }
+//        if (user!= null) {
+//            messageFuncActions.sendNewUserMessage(user.getId());
+//        }
+//
+//        return ResponseEntity.ok(user);
 
-        return ResponseEntity.ok(user);
+        Response response = keycloakUtils.createKeycloakUser(user);
+
+        return ResponseEntity.status(response.getStatus()).build();
     }
 
     @PutMapping("/update")
