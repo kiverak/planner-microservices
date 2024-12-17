@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EntityScan(basePackages = {"uz.kiverak.micro.planner"})
+//@EntityScan(basePackages = {"uz.kiverak.micro.planner"})
 @ComponentScan(basePackages = {"uz.kiverak.micro.planner.**"})
 @RefreshScope
 public class PlannerUsersApplication {
