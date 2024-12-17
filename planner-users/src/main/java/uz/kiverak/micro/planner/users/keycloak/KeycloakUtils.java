@@ -24,9 +24,9 @@ public class KeycloakUtils {
 
     @Value("${keycloak.auth-server-url}")
     private String serverURL;
-    @Value("${keycloak.resource-realm}")
+    @Value("${keycloak.realm}")
     private String realm;
-    @Value("${keycloak.resource-user}")
+    @Value("${keycloak.resource}")
     private String clientID;
     @Value("${keycloak.credentials.secret}")
     private String secret;
