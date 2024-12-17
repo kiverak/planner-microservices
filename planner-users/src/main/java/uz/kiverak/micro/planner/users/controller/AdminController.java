@@ -236,7 +236,7 @@ public class AdminController {
     @PostMapping("/searchByEmail")
     public ResponseEntity<List<UserRepresentation>> searchByEmail(@RequestBody String email) {
 
-        return ResponseEntity.ok(keycloakUtils.searchKeycloakUsersByAttribute(email));
+        return ResponseEntity.ok(keycloakUtils.searchKeycloakUsersByEmail(email));
     }
 
 }

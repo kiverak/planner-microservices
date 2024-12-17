@@ -103,6 +103,11 @@ public class KeycloakUtils {
         return usersResource.searchByAttributes(text);
     }
 
+    public List<UserRepresentation> searchKeycloakUsersByEmail(String email) {
+
+        return usersResource.searchByAttributes("email:" + email);
+    }
+
     public void updateKeycloakUser(UserDto userDto) {
 
         CredentialRepresentation credentialRepresentation = createPasswordCredentials(userDto.getPassword());
