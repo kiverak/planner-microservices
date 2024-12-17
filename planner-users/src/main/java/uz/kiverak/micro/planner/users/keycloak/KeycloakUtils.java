@@ -4,8 +4,10 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,9 @@ import uz.kiverak.micro.planner.users.dto.UserDto;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class KeycloakUtils {
@@ -69,5 +73,18 @@ public class KeycloakUtils {
         credential.setType(CredentialRepresentation.PASSWORD);
         credential.setValue(password);
         return credential;
+    }
+
+    public void addRoles(String userId, List<String> roles) {
+
+        List<RoleRepresentation> kcRoles = new ArrayList<>();   // список доступных ролей в реалме
+        for (String role : roles) {
+            RoleRepresentation roleRepresentation = realmResource.roles().get(role).toRepresentation();
+            kcRoles.add(roleRepresentation);
+        }
+
+        UserResource uniqueUserResource = usersResource.get(userId);    // получаем пользователя реалма
+
+        uniqueUserResource.roles().realmLevel().add(kcRoles);
     }
 }

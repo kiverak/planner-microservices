@@ -20,6 +20,8 @@ import uz.kiverak.micro.planner.users.service.UserService;
 import uz.kiverak.micro.planner.utils.rest.webclient.UserWebclientBuilder;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -31,6 +33,7 @@ public class AdminController {
     public static final String ID_COLUMN = "id";
     public static final Integer DEFAULT_PAGE_SIZE = 10;
     public static final int CONFLICT = 409;
+    public static final String USER_ROLE_NAME = "user";
 
     private final UserService userService;
     private final UserWebclientBuilder userWebclientBuilder;
@@ -92,6 +95,10 @@ public class AdminController {
 
         String userId = CreatedResponseUtil.getCreatedId(response);
         log.info("User created with userId: {}", userId);
+
+        List<String> defaultRoles = new ArrayList<>();
+        defaultRoles.add(USER_ROLE_NAME);
+        keycloakUtils.addRoles(userId, defaultRoles);
 
         return ResponseEntity.status(response.getStatus()).build();
     }
