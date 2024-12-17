@@ -87,4 +87,32 @@ public class KeycloakUtils {
 
         uniqueUserResource.roles().realmLevel().add(kcRoles);
     }
+
+    public void deleteKeycloakUser(String userId) {
+        UserResource uniqueUserResource = usersResource.get(userId);
+        uniqueUserResource.remove();
+    }
+
+    public UserRepresentation findKeycloakUserByUserId(String userId) {
+
+        return usersResource.get(userId).toRepresentation();
+    }
+
+    public List<UserRepresentation> searchKeycloakUsersByAttribute(String text) {
+
+        return usersResource.searchByAttributes(text);
+    }
+
+    public void updateKeycloakUser(UserDto userDto) {
+
+        CredentialRepresentation credentialRepresentation = createPasswordCredentials(userDto.getPassword());
+
+        UserRepresentation kcUser = new UserRepresentation();
+        kcUser.setUsername(userDto.getUsername());
+        kcUser.setCredentials(Collections.singletonList(credentialRepresentation));
+        kcUser.setEmail(userDto.getEmail());
+
+        UserResource uniqueUser = usersResource.get(userDto.getId());
+        uniqueUser.update(kcUser);
+    }
 }

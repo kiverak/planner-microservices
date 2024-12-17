@@ -4,6 +4,7 @@ import javax.ws.rs.core.Response;
 
 import lombok.extern.log4j.Log4j2;
 import org.keycloak.admin.client.CreatedResponseUtil;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +38,7 @@ public class AdminController {
 
     private final UserService userService;
     private final UserWebclientBuilder userWebclientBuilder;
-//    private final MessageProducer messageProducer;
+    //    private final MessageProducer messageProducer;
     private final MessageFuncActions messageFuncActions;
     private final KeycloakUtils keycloakUtils;
 
@@ -103,6 +104,7 @@ public class AdminController {
         return ResponseEntity.status(response.getStatus()).build();
     }
 
+    @Deprecated
     @PutMapping("/update")
     public ResponseEntity<User> update(@RequestBody User user) {
 
@@ -127,14 +129,27 @@ public class AdminController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<UserRepresentation> update(@RequestBody UserDto userDto) {
+        if (userDto == null || userDto.getId().isBlank()) {
+            return new ResponseEntity("missed param: id", HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        keycloakUtils.updateKeycloakUser(userDto);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @PostMapping("/deletebyid")
     public ResponseEntity deleteByUserId(@RequestBody String userId) {
-        try {
-            userService.deleteByUserId(userId);
-        } catch (EmptyResultDataAccessException e) {
-            e.printStackTrace();
-            return new ResponseEntity("userId=" + userId + " not found", HttpStatus.NOT_ACCEPTABLE);
-        }
+//        try {
+//            userService.deleteByUserId(userId);
+//        } catch (EmptyResultDataAccessException e) {
+//            e.printStackTrace();
+//            return new ResponseEntity("userId=" + userId + " not found", HttpStatus.NOT_ACCEPTABLE);
+//        }
+
+        keycloakUtils.deleteKeycloakUser(userId);
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -152,18 +167,21 @@ public class AdminController {
     }
 
     @PostMapping("/id")
-    public ResponseEntity<User> findById(@RequestBody String id) {
-        Optional<User> userOptional = userService.findById(id);
+    public ResponseEntity<UserRepresentation> findById(@RequestBody String userId) {
+//    public ResponseEntity<User> findById(@RequestBody String userId) {
+//        Optional<User> userOptional = userService.findById(userId);
+//
+//        try {
+//            if (userOptional.isPresent()) {
+//                return ResponseEntity.ok(userOptional.get());
+//            }
+//        } catch (NoSuchElementException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return new ResponseEntity("userId=" + userId + " not found", HttpStatus.NO_CONTENT);
 
-        try {
-            if (userOptional.isPresent()) {
-                return ResponseEntity.ok(userOptional.get());
-            }
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
-        }
-
-        return new ResponseEntity("id=" + id + " not found", HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok(keycloakUtils.findKeycloakUserByUserId(userId));
     }
 
     @PostMapping("/email")
@@ -181,6 +199,7 @@ public class AdminController {
         return new ResponseEntity("email=" + email + " not found", HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @Deprecated
     @PostMapping("/search")
     public ResponseEntity<Page<User>> search(@RequestBody UserSearchValues userSearchValues) throws ParseException {
         String email = userSearchValues.getEmail() != null ? userSearchValues.getEmail() : null;
@@ -212,6 +231,12 @@ public class AdminController {
         Page<User> result = userService.findByParams(email, username, pageRequest);
 
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/searchByEmail")
+    public ResponseEntity<List<UserRepresentation>> searchByEmail(@RequestBody String email) {
+
+        return ResponseEntity.ok(keycloakUtils.searchKeycloakUsersByAttribute(email));
     }
 
 }
