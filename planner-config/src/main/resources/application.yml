@@ -10,7 +10,7 @@ spring:
         git:
           uri: https://github.com/kiverak/prop-test
           clone-on-start: true
-          basedir: file://d:/tmp/git-config-server
+          basedir: file://c:/tmp/git-config-server
           username: kiverak
           password: ${github_token}
           default-label: main

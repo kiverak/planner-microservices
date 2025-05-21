@@ -28,7 +28,7 @@ repositories {
 
 ext {
     set('springCloudVersion', "2024.0.0")
-    set('keyCloakVersion', "18.0.2")
+    set('keyCloakVersion', "26.2.4")
 }
 
 dependencies {
